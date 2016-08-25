@@ -1,0 +1,7 @@
+{"$$indexCreated":{"fieldName":"name","unique":true,"sparse":false}}
+{"name":"01.jpg","likes":0,"dislikes":0,"_id":"bHBN1jcs49ZL9KkF"}
+{"name":"02.jpg","likes":0,"dislikes":0,"_id":"ubotlRHochD6yTs9"}
+{"name":"03.jpg","likes":0,"dislikes":0,"_id":"7VWQwnPFJ0uprQ2k"}
+{"name":"02.jpg","likes":0,"dislikes":1,"_id":"ubotlRHochD6yTs9"}
+{"name":"01.jpg","likes":1,"dislikes":0,"_id":"bHBN1jcs49ZL9KkF"}
+{"name":"03.jpg","likes":0,"dislikes":1,"_id":"7VWQwnPFJ0uprQ2k"}
