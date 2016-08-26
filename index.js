@@ -18,6 +18,6 @@ require('./routes')(app);
 
 //This file has been called directly with
 // node index.js. Start the server
-app.listen(8081, () => {
+app.listen(process.env.PORT || 8081, () => {
     console.log('The app is running on http://localhost:8081');
 });
