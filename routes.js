@@ -1,20 +1,19 @@
 var async = require('async');
-var load = require('./load');
+var User = require('./mongoose').User;
+var Photo = require('./mongoose').Photo;
 
-module.exports = app => {   
-    console.log('routes');  
+module.exports = app => {
+    console.log('routes');
     // Homepage
     app.get('/', (req, res) => {        
-        console.log('get /');       
-        var _db = load.database;
-        var _photos = _db.collection('photos');
-        var _users = _db.collection('users');
+        console.log('get /');
+
         var image_to_show = null;
         // Flow
         async.waterfall([
             // Find all photos
             next =>
-                _photos.find().toArray((err, photos) => {
+                Photo.find({},(err, photos) => {
                     if(err) return next(err);
                     console.log('find all photos');
                     console.log(photos);
@@ -27,9 +26,8 @@ module.exports = app => {
                     console.log('no photos');
                     //return next('no photos');
                 } 
-                _users.findOne({ 
-                    ip: req.ip 
-                },(err, user) => {
+                User.findOne({ ip: req.ip }
+                ,(err, user) => {
                     console.log('user who is voting');
                     console.log(user);
                     if(err) return next(err);
@@ -58,38 +56,31 @@ module.exports = app => {
         ], err => {
             if(err) return console.log(err);
             res.render('home', { photo: image_to_show });
-            _db.close();
         });
     });
+
     // standings
     app.get('/standings', (req, res) => {
-        var _db = load.database;
-        var _photos = _db.collection('photos');
-        _photos.find().toArray((err, all_photos) => {
+        Photo.find({},(err, all_photos) => {
             // sort the photos
             all_photos.sort((p1, p2) => {
                 return (p2.likes - p2.dislikes) - (p1.likes - p1.dislikes);
             });
             // Render the standing display and pass the photo
-            res.render('standings', { standings: all_photos });
-            _db.close();
+            res.render('standings', { standings: all_photos });            
         });
     });
 
+/*
     //This is executed before the next two post requests
     app.post('*', (req, res, next) => {
-        console.log('app.post(*)');
         console.log('req.ip');
         console.log(req.ip);
-        var _db = load.database;
-        var _users = _db.collection('users');
         // Register the user ¡n the db by ip address
-        _users.insert({
-            ip: req.ip,
-            votes: []
-        }, () => {
+        User.create({ ip: req.ip, votes: [] },
+        (err, result) => {
+            if(err) return console.log(err);
             console.log('call next');
-            _db.close();
             next();
         });
     }); 
@@ -142,4 +133,5 @@ module.exports = app => {
 
     app.post('/notcute', vote);
     app.post('/cute', vote);
+    */
 };
