@@ -19,7 +19,7 @@ var load_photos = (model, path, next) => {
 }
 
 var connect = (next) => {
-    MongoClient.connect('mongodb://funtexico:funtexic0@ds031741.mlab.com:31741/memes', (err, database) => {
+    MongoClient.connect('mongodb://funtexico:funtexic0@ds017246.mlab.com:17246/heroku_3cn43gb3', (err, database) => {
         if(err) return next(err);
         // Global variable to be used outside
         console.log('Connected to: ' + database.databaseName + ' from mlabs.com');
