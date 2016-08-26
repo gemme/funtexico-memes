@@ -11,23 +11,23 @@ var bodyParser = require('body-parser');
 // that the index.js file will use to configure the
 // express application
 module.exports = app => {
-	console.log('loading config');
-	//Register and configure the handlebars engine templating
-	app.engine('html', handlebars({
-		defaultLayout: 'main',
-		extname: '.html',
-		layoutsDir: __dirname + '/views/layouts'
-	}));
+    console.log('loading config');
+    //Register and configure the handlebars engine templating
+    app.engine('html', handlebars({
+        defaultLayout: 'main',
+        extname: '.html',
+        layoutsDir: __dirname + '/views/layouts'
+    }));
 
-	// Set .html as the default template extension
-	app.set('view engine', 'html');
+    // Set .html as the default template extension
+    app.set('view engine', 'html');
 
-	//Tell express where it can find the templates
-	app.set('views', __dirname + '/views');
+    //Tell express where it can find the templates
+    app.set('views', __dirname + '/views');
 
-	//Make the files in the public folder available to the world
-	app.use(express.static(__dirname + '/public'));
+    //Make the files in the public folder available to the world
+    app.use(express.static(__dirname + '/public'));
 
-	// Parse POST request data. It will be available in the req.body object
-	app.use(bodyParser.urlencoded({ extended: true }));
+    // Parse POST request data. It will be available in the req.body object
+    app.use(bodyParser.urlencoded({ extended: true }));
 };
