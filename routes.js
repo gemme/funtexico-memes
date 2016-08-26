@@ -58,6 +58,7 @@ module.exports = app => {
         ], err => {
             if(err) return console.log(err);
             res.render('home', { photo: image_to_show });
+            _db.close();
         });
     });
     // standings
@@ -71,6 +72,7 @@ module.exports = app => {
             });
             // Render the standing display and pass the photo
             res.render('standings', { standings: all_photos });
+            _db.close();
         });
     });
 
@@ -87,6 +89,7 @@ module.exports = app => {
             votes: []
         }, () => {
             console.log('call next');
+            _db.close();
             next();
         });
     }); 
@@ -131,7 +134,10 @@ module.exports = app => {
                     next();
                 });
             }
-         ]);
+         ], err => {
+            if(err) return console.log(err);
+            _db.close();
+         });
     };
 
     app.post('/notcute', vote);
