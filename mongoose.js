@@ -18,7 +18,8 @@ var photoSchema = mongoose.Schema({
 });
 
 var userSchema = mongoose.Schema({
-	ip: String
+	ip: String,
+    votes: Array
 });
 
 var _user = mongoose.model('User', userSchema);
