@@ -78,11 +78,19 @@ module.exports = app => {
 
     //This is executed before the next two post requests
     app.post('*', (req, res, next) => {
-        console.log('req.ip');
-        console.log(req.ip);
+        // get real ipaddress due to heroku network
+        var ipAddr = req.headers["x-forwarded-for"];
+        if (ipAddr){
+            var list = ipAddr.split(",");
+            ipAddr = list.pop();
+        } else {
+            ipAddr = req.connection.remoteAddress;
+        }
+        console.log('my real ip addresses');
+        console.log(ipAddr);
         // Find or create users
         async.waterfall([
-            next => User.findOne({ip: req.ip}, (err, user) => {
+            next => User.findOne({ip: ipAddr}, (err, user) => {
                     if(err) return next(err);
                     next(null, user);
                 }),
@@ -91,7 +99,7 @@ module.exports = app => {
                 console.log('user');
                 console.log(user);
                 if(user) return next();
-                User.create({ ip: req.ip, votes: [] },
+                User.create({ ip: ipAddr, votes: [] },
                     (err, result) => {
                     if(err) return console.log(err);
                     console.log('call next');
