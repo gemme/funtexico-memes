@@ -14,7 +14,9 @@ db.once('open', callback => {
 });
 
 var photoSchema = mongoose.Schema({
-	name: String
+	name: String,
+    likes: { type:Number, default: 0 },
+    dislikes: { type: Number, default: 0 }
 });
 
 var userSchema = mongoose.Schema({
