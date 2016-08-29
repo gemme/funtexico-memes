@@ -4,11 +4,23 @@ var Photo = require('./mongoose').Photo;
 
 module.exports = app => {
     console.log('routes');
+    // get real ip address
+    var getIpAddress = (req) => {
+        var ipAddr = req.headers["x-forwarded-for"];
+        if (ipAddr){
+            var list = ipAddr.split(",");
+            ipAddr = list.pop();
+        } else {
+            ipAddr = req.connection.remoteAddress;
+        }
+        return ipAddr;
+    };
     // Homepage
     app.get('/', (req, res) => {        
         console.log('get /');
 
         var image_to_show = null;
+        var ipAddr = getIpAddress(req);
         // Flow
         async.waterfall([
             // Find all photos
@@ -26,7 +38,7 @@ module.exports = app => {
                     console.log('no photos');
                     //return next('no photos');
                 } 
-                User.findOne({ ip: req.ip }
+                User.findOne({ ip: ipAddr }
                 ,(err, user) => {
                     console.log('user who is voting');
                     console.log(user);
@@ -79,13 +91,7 @@ module.exports = app => {
     //This is executed before the next two post requests
     app.post('*', (req, res, next) => {
         // get real ipaddress due to heroku network
-        var ipAddr = req.headers["x-forwarded-for"];
-        if (ipAddr){
-            var list = ipAddr.split(",");
-            ipAddr = list.pop();
-        } else {
-            ipAddr = req.connection.remoteAddress;
-        }
+        var ipAddr = getIpAddress(req);
         console.log('my real ip addresses');
         console.log(ipAddr);
         // Find or create users
