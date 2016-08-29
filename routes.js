@@ -71,25 +71,38 @@ module.exports = app => {
         });
     });
 
-/*
+
     //This is executed before the next two post requests
     app.post('*', (req, res, next) => {
         console.log('req.ip');
         console.log(req.ip);
-        // Register the user ¡n the db by ip address
-        User.create({ ip: req.ip, votes: [] },
-        (err, result) => {
-            if(err) return console.log(err);
-            console.log('call next');
+        // Find or create users
+        async.waterfall([
+            next => User.findOne({ip: req.ip}, (err, user) => {
+                    if(err) return next(err);
+                    next(null, user);
+                }),
+            // Register the user ¡n the db by ip address
+            (user, next) => {
+                console.log('user');
+                console.log(user);
+                if(user) return next();
+                User.create({ ip: req.ip, votes: [] },
+                    (err, result) => {
+                    if(err) return console.log(err);
+                    console.log('call next');
+                    next();
+                });
+            }
+        ], err => {
+            if(err) return console.log('Error' + err);
+            console.log('users created succesfully');
             next();
         });
     }); 
 
     var vote = (req, res) => {
         console.log('vote');
-        var _db = load.database;
-        var _users = _db.collection('users');
-        var _photos = _db.collection('photos');
         // Which field to increment depending on the path
         var what = {
             '/notcute': {dislikes: 1},
@@ -98,7 +111,7 @@ module.exports = app => {
          /// FLow
          async.waterfall([
             //Find the photo, increment the vote counter and mark that the user voted on it.
-            next => _photos.findOne({ name: req.body.photo },next),
+            next => Photo.findOne({ name: req.body.photo },next),
             (photo, next) => {
                 console.log('photo');
                 console.log(photo);
@@ -109,13 +122,12 @@ module.exports = app => {
                 //FLow
                 async.parallel([
                     // increment mark on photo by like or dislike
-                    next => _photos.update(photo, {
+                    next => Photo.update(photo, {
                                 $inc : what[req.path]
                             }, next),
                     // update user adding the photoId
-                    next => _users.update({
-                                ip: req.ip
-                            },{
+                    next => User.update({ ip: req.ip},
+                            {
                                 $addToSet: { votes: photo._id}
                             },next)                 
                 ], err => {
@@ -125,13 +137,9 @@ module.exports = app => {
                     next();
                 });
             }
-         ], err => {
-            if(err) return console.log(err);
-            _db.close();
-         });
+         ]);
     };
 
     app.post('/notcute', vote);
     app.post('/cute', vote);
-    */
 };
