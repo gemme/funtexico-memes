@@ -61,11 +61,13 @@ module.exports = app => {
 
     // standings
     app.get('/standings', (req, res) => {
-        Photo.find({},(err, all_photos) => {
+        Photo.find({}).sort({ likes:-1  }).exec((err, all_photos) => {
             // sort the photos
+            /*
             all_photos.sort((p1, p2) => {
                 return (p2.likes - p2.dislikes) - (p1.likes - p1.dislikes);
             });
+            */
             console.log('all_photos');
             console.log(all_photos);
             // Render the standing display and pass the photo
