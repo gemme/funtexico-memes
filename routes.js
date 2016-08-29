@@ -126,6 +126,8 @@ module.exports = app => {
             '/notcute': {dislikes: 1},
             '/cute': { likes: 1}
         };
+
+        var ipAddr = getIpAddress(req);
          /// FLow
          async.waterfall([
             //Find the photo, increment the vote counter and mark that the user voted on it.
@@ -144,7 +146,7 @@ module.exports = app => {
                                 $inc : what[req.path]
                             }, next),
                     // update user adding the photoId
-                    next => User.update({ ip: req.ip},
+                    next => User.update({ ip: ipAddr},
                             {
                                 $addToSet: { votes: photo._id}
                             },next)                 
