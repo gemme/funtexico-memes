@@ -10,16 +10,16 @@
 	<div class="button-holder">
 		<form action="./cute" method="post">
 			<input type="hidden" name="photo" value="{{photo.name}}" />
-			<input type="submit" value="Cute!" />
+			<input type="submit" value="Fun!" />
 		</form>
 		<form action="./notcute" method="post">
 			<input type="hidden" name="photo" value="{{photo.name}}" />
-			<input type="submit" value="Not Cute!" />
+			<input type="submit" value="Not Fun!" />
 		</form>
 	</div>
 
 {{else}}
 
-	<h3>No more photos to vote on! Check out the <a href="./standings">standings</a>.</h3>
+	<h3>You have already voted all memes! Check out the <a href="./standings">standings</a>.</h3>
 
 {{/if}}
