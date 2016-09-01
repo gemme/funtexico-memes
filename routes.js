@@ -60,8 +60,8 @@ module.exports = app => {
             }           
         ], err => {
             if(err) return console.log(err);
-            if(true)
-                return res.render('expired');
+            // expired
+            return res.render('expired');
             res.render('home', { photo: image_to_show });
         });
     });
