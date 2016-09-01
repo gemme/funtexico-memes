@@ -6,17 +6,10 @@ module.exports = app => {
     console.log('routes');
     // get real ip address
     var getIpAddress = (req) => {
-        var ipAddr = req.headers["x-forwarded-for"];
-        if (ipAddr){
-            var list = ipAddr.split(",");
-            ipAddr = list.pop();
-        } else {
-            ipAddr = req.connection.remoteAddress;
-        }
-        return ipAddr;
+        return req.session.user;
     };
     // Homepage
-    app.get('/', (req, res) => {        
+    app.get('/', (req, res) => {
         console.log('get /');
 
         var image_to_show = null;
@@ -75,11 +68,6 @@ module.exports = app => {
     app.get('/standings', (req, res) => {
         Photo.find({}).sort({ likes:-1  }).exec((err, all_photos) => {
             // sort the photos
-            /*
-            all_photos.sort((p1, p2) => {
-                return (p2.likes - p2.dislikes) - (p1.likes - p1.dislikes);
-            });
-            */
             console.log('all_photos');
             console.log(all_photos);
             // Render the standing display and pass the photo
@@ -105,9 +93,13 @@ module.exports = app => {
                 console.log('user');
                 console.log(user);
                 if(user) return next();
-                User.create({ ip: ipAddr, votes: [] },
+                // generate a random number as an id
+                // to indentify users
+                var random_user = Math.random() * 12345;
+                User.create({ ip: random_user, votes: [] },
                     (err, result) => {
                     if(err) return console.log(err);
+                    req.session.user = random_user;
                     console.log('call next');
                     next();
                 });
