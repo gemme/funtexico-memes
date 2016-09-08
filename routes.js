@@ -61,7 +61,6 @@ module.exports = app => {
         ], err => {
             if(err) return console.log(err);
             // expired
-            return res.render('expired');
             res.render('home', { photo: image_to_show });
         });
     });
